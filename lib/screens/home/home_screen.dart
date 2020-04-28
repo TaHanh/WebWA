@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:guide_ice_scream/config/env.dart';
 import 'package:guide_ice_scream/main.dart';
 import 'package:guide_ice_scream/screens/about/about_screen.dart';
@@ -94,14 +95,21 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text(nameApp),
         backgroundColor: Color(0xFF075e54),
         automaticallyImplyLeading: false,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              _scaffoldKey.currentState.openDrawer();
-            },
-          )
-        ],
+        leading: MediaQuery.of(context).viewInsets.bottom > 10
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  // FocusScope.of(context).requestFocus(new FocusNode());
+//                  FocusScope.of(context).unfocus();
+                  SystemChannels.textInput.invokeMethod('TextInput.hide');
+                },
+              )
+            : IconButton(
+                icon: Icon(Icons.menu),
+                onPressed: () {
+                  _scaffoldKey.currentState.openDrawer();
+                },
+              ),
       ),
       body: PageView(
         controller: _pageController,
@@ -140,19 +148,27 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             ListTile(
+              title: Text('Chat with number'),
+              leading: Icon(Icons.perm_phone_msg),
+              onTap: () {
+                onTabTapped(1);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
               title: Text('Share app'),
               leading: Icon(Icons.share),
               onTap: () {
                 callBack("SHARE", "");
               },
             ),
-            ListTile(
-              title: Text('Rate app'),
-              leading: Icon(Icons.star_border),
-              onTap: () {
-                callBack("RATE", "");
-              },
-            ),
+//            ListTile(
+//              title: Text('Rate app'),
+//              leading: Icon(Icons.star_border),
+//              onTap: () {
+//                callBack("RATE", "");
+//              },
+//            ),
             ListTile(
               title: Text('Feedback to us'),
               leading: Icon(Icons.feedback),

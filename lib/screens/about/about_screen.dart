@@ -13,9 +13,7 @@ class AboutScreen extends StatefulWidget {
 }
 
 class _AboutScreenState extends State<AboutScreen> {
-  String unsafeHtml =
-      'Welcome to <a href="https://www.woolha.com">woolha.com</a>. The \'cutest\' programming blog ever.';
-  HtmlEscape htmlEscape = const HtmlEscape();
+
   @override
   void initState() {
     // TODO: implement initState

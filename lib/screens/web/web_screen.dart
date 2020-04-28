@@ -21,15 +21,12 @@ class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixi
   @override
   void initState() {
     super.initState();
-    newUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/53.1";
-    // newUA =
-    //     'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Mobile Safari/537.36';
+
+
     // newUA =
     //     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
     // newUA =
     //     "Mozilla/5.0 (Linux; Android 5.1.1; Android SDK built for x86 Build/LMY48X) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36";
-    // newUA =
-    //     "Mozilla/5.0 (Linux; Android 4.4.4; One Build/KTU84L.H4) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/33.0.0.0 Mobile Safari/537.36 [Awesome Kitteh/v2.0]";
   }
 
   JavascriptChannel snackbarJavascriptChannel(BuildContext context) {
@@ -52,44 +49,64 @@ class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixi
 
   @override
   Widget build(BuildContext context) {
+//    String newUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/53.1";
+//    String newUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
+//    String newUA = "Mozilla/5.0 (Linux; Android 5.1.1; Android SDK built for x86 Build/LMY48X) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36";
+    String newUA ="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
-          image: new DecorationImage(
-            image: new ExactAssetImage('assets/images/banner.png'),
-            fit: BoxFit.cover,
-          ),
-        ),
+        // decoration: BoxDecoration(
+        //   image: new DecorationImage(
+        //     image: new ExactAssetImage('assets/images/banner.png'),
+        //     fit: BoxFit.cover,
+        //   ),
+        // ),
         child: SafeArea(
           child: new WebView(
-            key: UniqueKey(),
+            // key: UniqueKey(),
+//             initialUrl: "https://www.facebook.com/",
             initialUrl: "https://web.whatsapp.com/",
             javascriptMode: JavascriptMode.unrestricted,
             userAgent: newUA,
-            onWebViewCreated: (WebViewController webViewController) {
-              // _controller.complete(webViewController);
-            },
-            javascriptChannels: <JavascriptChannel>[
-              snackbarJavascriptChannel(context),
-            ].toSet(),
+             onWebViewCreated: (WebViewController webViewController) {
+                _controller.complete(webViewController);
+             },
+            // javascriptChannels: <JavascriptChannel>[
+            //   snackbarJavascriptChannel(context),
+            // ].toSet(),
+            // navigationDelegate: (NavigationRequest request) {
+            //   return NavigationDecision.navigate;
+            // },
             navigationDelegate: (NavigationRequest request) {
+              if (request.url.startsWith('https://www.youtube.com/')) {
+                print('blocking navigation to $request}');
+                return NavigationDecision.prevent;
+              }
+              if (request.url.startsWith('https://flutter.dev/docs')) {
+                print('blocking navigation to $request}');
+                return NavigationDecision.prevent;
+              }
+              print('allowing navigation to $request');
               return NavigationDecision.navigate;
+            },
+            onPageFinished: (String url) {
+              print('Page finished loading: $url');
             },
           ),
         ),
       ),
     );
     return Scaffold(
-      body: Container(
+      body: SafeArea(
         child: webview.WebviewScaffold(
           url: "https://web.whatsapp.com/",
-          mediaPlaybackRequiresUserGesture: false,
-          withZoom: true,
-          withLocalStorage: true,
-          hidden: true,
+          // mediaPlaybackRequiresUserGesture: true,
+          // withZoom: true,
+          // withLocalStorage: true,
+          // hidden: true,
           withJavascript: true,
           scrollBar: true,
-          enableAppScheme: true,
+          // enableAppScheme: true,
           userAgent: newUA,
           // clearCookies: false,
           // clearCache: false,
