@@ -4,13 +4,16 @@ import 'package:flutter/services.dart';
 import 'package:guide_ice_scream/config/env.dart';
 import 'package:guide_ice_scream/screens/home/home_screen.dart';
 
+import 'config/env.dart';
+
 void main() {
   Admob.initialize(nameApp);
   return runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  static const platform = const MethodChannel('my_module');
+  static MethodChannel platform = const MethodChannel('my_module');
+  // bannerSize = AdmobBannerSize.BANNER;
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,7 +32,18 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => HomeScreen(),
+          '/': (context) {
+            platform.invokeMethod("getIdBanner").then((value) {
+              print(value);
+              if (value != null) admobBannerID = value as String;
+            });
+            platform.invokeMethod("getIdInter").then((value) {
+              if (value != null) {
+                admobInterstitialID = value as String;
+              }
+            });
+            return HomeScreen();
+          },
         });
   }
 }

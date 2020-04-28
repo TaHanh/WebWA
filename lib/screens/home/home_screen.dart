@@ -1,3 +1,4 @@
+import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:guide_ice_scream/config/env.dart';
@@ -8,8 +9,11 @@ import 'package:guide_ice_scream/screens/web/web_screen.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../main.dart';
+
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
+
   @override
   _HomeScreenState createState() => new _HomeScreenState();
 }
@@ -22,11 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _children = [WebScreen(), OpenWAScreen()];
   PageController _pageController;
+
   @override
   void initState() {
     super.initState();
-    // bannerSize = AdmobBannerSize.BANNER;
-    _pageController = PageController(initialPage: _currentIndex, keepPage: true, viewportFraction: 1.0);
+    _pageController = PageController(
+        initialPage: _currentIndex, keepPage: true, viewportFraction: 1.0);
     getAppID();
   }
 
@@ -35,16 +40,17 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentIndex = index;
     });
-    _pageController.animateToPage(index, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    _pageController.animateToPage(index,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   @override
   void dispose() {
     super.dispose();
 
-    // if (interstitialAd != null) {
-    //   interstitialAd.dispose();
-    // }
+//    if (interstitialAd != null) {
+//      interstitialAd.dispose();
+//    }
   }
 
   @override
@@ -183,12 +189,18 @@ class _HomeScreenState extends State<HomeScreen> {
                 callBack("ABOUT", "");
               },
             ),
+//            AdmobBanner(
+//              adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
+//              adUnitId: admobBannerID,
+//            )
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped, // new
-        currentIndex: _currentIndex, // new
+        onTap: onTabTapped,
+        // new
+        currentIndex: _currentIndex,
+        // new
         showSelectedLabels: false,
         showUnselectedLabels: false,
         iconSize: 30.0,

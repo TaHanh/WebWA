@@ -1,10 +1,14 @@
 import 'dart:convert';
+
+import 'package:admob_flutter/admob_flutter.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
-import 'package:country_code_picker/country_code_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../../config/env.dart';
 
 class OpenWAScreen extends StatefulWidget {
   OpenWAScreen({Key key}) : super(key: key);
@@ -12,7 +16,8 @@ class OpenWAScreen extends StatefulWidget {
   _OpenWAScreenState createState() => new _OpenWAScreenState();
 }
 
-class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClientMixin {
+class _OpenWAScreenState extends State<OpenWAScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
   final GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
@@ -35,7 +40,8 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
       String phone = code + phoneTxtController.text;
       // print(phone);
       // print(messageTxtController.text);
-      var whatsappUrl = "whatsapp://send?phone=$phone&text=${messageTxtController.text}";
+      var whatsappUrl =
+          "whatsapp://send?phone=$phone&text=${messageTxtController.text}";
       await canLaunch(whatsappUrl)
           ? launch(whatsappUrl)
           : scaffoldKey.currentState.showSnackBar(new SnackBar(
@@ -171,7 +177,8 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                             child: TextField(
                               keyboardType: TextInputType.number,
                               controller: phoneTxtController,
-                              decoration: InputDecoration(hintText: 'Phone number - require'),
+                              decoration: InputDecoration(
+                                  hintText: 'Phone number - require'),
                             ),
                           ),
                         ],
@@ -181,14 +188,16 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                       padding: EdgeInsets.fromLTRB(10.0, 5.0, 0.0, 5.0),
                       child: TextField(
                         controller: nameTxtController,
-                        decoration: InputDecoration(hintText: 'Name - optional'),
+                        decoration:
+                            InputDecoration(hintText: 'Name - optional'),
                       ),
                     ),
                     Container(
                       padding: EdgeInsets.fromLTRB(10.0, 0.0, 0.0, 0.0),
                       child: TextField(
                         controller: messageTxtController,
-                        decoration: InputDecoration(hintText: 'Message - optional'),
+                        decoration:
+                            InputDecoration(hintText: 'Message - optional'),
                       ),
                     ),
                     Container(
@@ -221,7 +230,8 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                             color: Color(0xFF075e54),
                             child: Text(
                               "WHATSAPP",
-                              style: TextStyle(color: Colors.white, fontSize: 18.0),
+                              style: TextStyle(
+                                  color: Colors.white, fontSize: 18.0),
                             ),
                           ),
                           // FlatButton(
@@ -246,7 +256,8 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                   physics: BouncingScrollPhysics(),
                   itemCount: numbers.length,
                   itemBuilder: (BuildContext context, int index) => Container(
-                    margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
                     padding: EdgeInsets.fromLTRB(10.0, 8.0, 10.0, 8.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -273,13 +284,15 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                                 numbers[(numbers.length - 1) - index]["phone"],
                                 style: TextStyle(fontSize: 16.0),
                               ),
-                              Text(numbers[(numbers.length - 1) - index]["name"]),
+                              Text(numbers[(numbers.length - 1) - index]
+                                  ["name"]),
                             ],
                           ),
                         ),
                         GestureDetector(
                           onTap: () {
-                            openWA(numbers[(numbers.length - 1) - index]["phone"]);
+                            openWA(
+                                numbers[(numbers.length - 1) - index]["phone"]);
                           },
                           child: Image.asset(
                             "assets/images/ic_wa.png",
@@ -312,6 +325,16 @@ class _OpenWAScreenState extends State<OpenWAScreen> with AutomaticKeepAliveClie
                   ),
                 ),
               ),
+//              SizedBox(
+//                height: 5,
+//              ),
+//              AdmobBanner(
+//                adUnitId: admobBannerID,
+//                adSize: AdmobBannerSize.BANNER,
+//              ),
+//              SizedBox(
+//                height: 5,
+//              ),
             ],
           ),
         ),
