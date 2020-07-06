@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:country_code_picker/country_code_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_open_whatsapp/flutter_open_whatsapp.dart';
+import 'package:guide_ice_scream/config/env.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../config/env.dart';
 
 class OpenWAScreen extends StatefulWidget {
   OpenWAScreen({Key key}) : super(key: key);
@@ -47,7 +47,7 @@ class _OpenWAScreenState extends State<OpenWAScreen>
           : scaffoldKey.currentState.showSnackBar(new SnackBar(
               content: new Text("Whatsapp is not installed!"),
               duration: Duration(seconds: 1),
-              backgroundColor: Color(0xFF009688).withOpacity(0.5),
+              backgroundColor: Color(0xFF108661),
             ));
       // if (key) {
       // FlutterOpenWhatsapp.sendSingleMessage(phone, messageTxtController.text);
@@ -67,7 +67,7 @@ class _OpenWAScreenState extends State<OpenWAScreen>
       scaffoldKey.currentState.showSnackBar(new SnackBar(
         content: new Text("Please enter phone number !"),
         duration: Duration(seconds: 1),
-        backgroundColor: Color(0xFF009688).withOpacity(0.5),
+        backgroundColor: Color(0xFF108661),
       ));
     }
   }
@@ -114,20 +114,24 @@ class _OpenWAScreenState extends State<OpenWAScreen>
   @override
   void dispose() {
     super.dispose();
-    // if (interstitialAd != null) {
-    //   interstitialAd.dispose();
-    // }
+//     if (interstitialAd != null) {
+//       interstitialAd.dispose();
+//     }
   }
 
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Chat With Number"),
+        centerTitle: true,
+      ),
       key: scaffoldKey,
       body: Container(
         decoration: BoxDecoration(
           image: new DecorationImage(
-            image: new ExactAssetImage('assets/images/banner.png'),
+            image: new ExactAssetImage('assets/images/bg3.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -328,13 +332,15 @@ class _OpenWAScreenState extends State<OpenWAScreen>
 //              SizedBox(
 //                height: 5,
 //              ),
-//              AdmobBanner(
-//                adUnitId: admobBannerID,
-//                adSize: AdmobBannerSize.BANNER,
-//              ),
-//              SizedBox(
-//                height: 5,
-//              ),
+              isShowBanner
+                  ? AdmobBanner(
+                      adUnitId: admobBannerID,
+                      adSize: AdmobBannerSize.LARGE_BANNER,
+                    )
+                  : Container(),
+              SizedBox(
+                height: 5,
+              ),
             ],
           ),
         ),

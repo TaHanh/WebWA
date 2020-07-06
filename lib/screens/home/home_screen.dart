@@ -1,57 +1,40 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:admob_flutter/admob_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:guide_ice_scream/config/env.dart';
 import 'package:guide_ice_scream/main.dart';
 import 'package:guide_ice_scream/screens/about/about_screen.dart';
 import 'package:guide_ice_scream/screens/open_wa/open_wa_screen.dart';
 import 'package:guide_ice_scream/screens/web/web_screen.dart';
+import 'package:guide_ice_scream/util/IntentAnimation.dart';
 import 'package:share/share.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../main.dart';
 
 class HomeScreen extends StatefulWidget {
-  HomeScreen({Key key}) : super(key: key);
-
   @override
-  _HomeScreenState createState() => new _HomeScreenState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // AdmobInterstitial interstitialAd;
-  // AdmobBannerSize bannerSize;
+  AdmobInterstitial interstitialAd;
+  StreamController loadingStream;
+  AdmobBannerSize bannerSize;
+
   String appId;
+
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   int _currentIndex = 0;
-  final List<Widget> _children = [WebScreen(), OpenWAScreen()];
+
+  double heightScreen = 0;
+
   PageController _pageController;
 
-  @override
-  void initState() {
-    super.initState();
-    _pageController = PageController(
-        initialPage: _currentIndex, keepPage: true, viewportFraction: 1.0);
-    getAppID();
-  }
-
-  void onTabTapped(int index) {
-    print(_currentIndex);
-    setState(() {
-      _currentIndex = index;
-    });
-    _pageController.animateToPage(index,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-
-//    if (interstitialAd != null) {
-//      interstitialAd.dispose();
-//    }
-  }
+  bool isLoading = false;
 
   @override
   launchURL(String url) async {
@@ -60,6 +43,13 @@ class _HomeScreenState extends State<HomeScreen> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loadingStream = new StreamController();
   }
 
   @override
@@ -73,13 +63,13 @@ class _HomeScreenState extends State<HomeScreen> {
         launchURL("mailto:${mailFeedback}?subject=FeedBack ${nameApp}&body=");
         break;
       case "RATE":
-        MyApp.platform.invokeMethod("rateManual");
+        platform.invokeMethod("rateManual");
         break;
-      case "ABOUT":
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => AboutScreen()),
-        );
+//      case "ABOUT":
+//        Navigator.push(
+//          context,
+//          MaterialPageRoute(builder: (context) => ProcyScreen()),
+//        );
 
         break;
       default:
@@ -87,137 +77,179 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   getAppID() async {
-    appId = await MyApp.platform.invokeMethod("getAppId");
-    setState(() {
-      appId;
-    });
+    appId = await platform.invokeMethod("getAppId");
+//    setState(() {
+//      appId;
+//    });
   }
 
   @override
   Widget build(BuildContext context) {
+    heightScreen = MediaQuery.of(context).size.height;
+    getAppID();
+    print("$heightScreen   3213131321");
     return Scaffold(
       key: _scaffoldKey,
-      appBar: AppBar(
-        title: Text(nameApp),
-        backgroundColor: Color(0xFF075e54),
-        automaticallyImplyLeading: false,
-        leading: MediaQuery.of(context).viewInsets.bottom > 10
-            ? IconButton(
-                icon: Icon(Icons.arrow_back_ios),
-                onPressed: () {
-                  // FocusScope.of(context).requestFocus(new FocusNode());
-//                  FocusScope.of(context).unfocus();
-                  SystemChannels.textInput.invokeMethod('TextInput.hide');
-                },
-              )
-            : IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  _scaffoldKey.currentState.openDrawer();
-                },
-              ),
-      ),
-      body: PageView(
-        controller: _pageController,
-        physics: NeverScrollableScrollPhysics(),
-        children: <Widget>[WebScreen(), OpenWAScreen()],
-        onPageChanged: (page) {},
-      ),
-      // body: _children[_currentIndex],
-      drawer: Drawer(
-        elevation: 1000,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            Container(
-              alignment: Alignment.center,
-              padding: EdgeInsets.fromLTRB(0, 50.0, 0, 30.0),
-              decoration: BoxDecoration(
-                color: Color(0xFF075e54),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image.asset(
-                    "assets/images/logo.png",
-                    height: 100.0,
-                    fit: BoxFit.contain,
+      body: Stack(
+        children: <Widget>[
+          Container(
+            alignment: Alignment.center,
+            child: Image.asset(
+              "assets/images/bg3.png",
+              fit: BoxFit.fill,
+              height: heightScreen,
+            ),
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                SizedBox(
+                  height: 30,
+                ),
+                Container(
+                  height: 200,
+                  child: Image.asset("assets/images/banner_tran.png"),
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          intentToScreen(context, WebScreen());
+                        },
+                        child: Container(
+                          width: 120,
+                          child: Image.asset("assets/images/scan.png"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          intentToScreen(context, OpenWAScreen());
+                        },
+                        child: Container(
+                          width: 120,
+                          child: Image.asset("assets/images/chat.png"),
+                        ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    padding: EdgeInsets.only(top: 15.0),
-                    child: Text(
-                      nameApp,
-                      style: TextStyle(fontSize: 18.0, color: Colors.white),
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Container(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          String link = urlApp + appId;
+                          Share.share(link);
+                        },
+                        child: Container(
+                          width: 120,
+                          child: Image.asset("assets/images/more.png"),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          intentToScreen(context, AboutScren());
+                        },
+                        child: Container(
+                          width: 120,
+                          child: Image.asset("assets/images/about.png"),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Container(),
+                ),
+                isShowBanner
+                    ? AdmobBanner(
+                        adSize: heightScreen > 600
+                            ? AdmobBannerSize.LARGE_BANNER
+                            : AdmobBannerSize.BANNER,
+                        adUnitId: admobBannerID,
+                      )
+                    : Container()
+              ],
+            ),
+          ),
+          StreamBuilder(
+            stream: loadingStream.stream,
+            builder: (ctx, snap) => snap.data is BlocLoading
+                ? GestureDetector(
+                    onTap: () {},
+                    child: Container(
+                      padding: EdgeInsets.only(top: 80),
+                      alignment: Alignment.center,
+                      color: Colors.white12,
+                      child: Image.asset(
+                        "assets/images/loading_v1.gif",
+                        height: 70,
+                        width: 70,
+                      ),
                     ),
                   )
-                ],
-              ),
-            ),
-            ListTile(
-              title: Text('Chat with number'),
-              leading: Icon(Icons.perm_phone_msg),
-              onTap: () {
-                onTabTapped(1);
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Share app'),
-              leading: Icon(Icons.share),
-              onTap: () {
-                callBack("SHARE", "");
-              },
-            ),
-//            ListTile(
-//              title: Text('Rate app'),
-//              leading: Icon(Icons.star_border),
-//              onTap: () {
-//                callBack("RATE", "");
-//              },
-//            ),
-            ListTile(
-              title: Text('Feedback to us'),
-              leading: Icon(Icons.feedback),
-              onTap: () {
-                callBack("FEEDBACK", "");
-              },
-            ),
-            ListTile(
-              title: Text('Privacy Policy'),
-              leading: Icon(Icons.info_outline),
-              onTap: () {
-                callBack("ABOUT", "");
-              },
-            ),
-//            AdmobBanner(
-//              adSize: AdmobBannerSize.MEDIUM_RECTANGLE,
-//              adUnitId: admobBannerID,
-//            )
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        onTap: onTabTapped,
-        // new
-        currentIndex: _currentIndex,
-        // new
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        iconSize: 30.0,
-        selectedItemColor: Color(0xFF075e54),
-        items: [
-          BottomNavigationBarItem(
-            icon: new Icon(Icons.chat),
-            title: new Text(''),
-          ),
-          BottomNavigationBarItem(
-            icon: new Icon(
-              Icons.chat_bubble_outline,
-            ),
-            title: new Text(''),
-          ),
+                : Container(),
+          )
         ],
       ),
     );
   }
+
+  void intentToScreen(BuildContext context, Widget screen) {
+    int ran = new Random().nextInt(100);
+    if (ran < 50 && isShowInter) {
+      loadingStream.sink.add(new BlocLoading());
+      interstitialAd = new AdmobInterstitial(
+          adUnitId: admobInterstitialID,
+          listener: (event, args) {
+            switch (event) {
+              case AdmobAdEvent.loaded:
+                interstitialAd.show();
+                break;
+              case AdmobAdEvent.closed:
+                loadingStream.sink.add("");
+                IntentAnimation.intentNomal(
+                    context: context,
+                    screen: screen,
+                    option: IntentAnimationOption.RIGHT_TO_LEFT,
+                    duration: Duration(milliseconds: 800));
+                break;
+              case AdmobAdEvent.failedToLoad:
+                loadingStream.sink.add("");
+                IntentAnimation.intentNomal(
+                    context: context,
+                    screen: screen,
+                    option: IntentAnimationOption.RIGHT_TO_LEFT,
+                    duration: Duration(milliseconds: 800));
+                break;
+              default:
+            }
+          });
+      interstitialAd.load();
+    } else
+      IntentAnimation.intentNomal(
+          context: context,
+          screen: screen,
+          option: IntentAnimationOption.RIGHT_TO_LEFT,
+          duration: Duration(milliseconds: 800));
+  }
 }
+
+class BlocLoading {}

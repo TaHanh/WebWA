@@ -3,4 +3,5 @@
     <string name="banner_id" translatable="false">ca-app-pub-3940256099942544/6300978111</string>
     <string name="inter_id" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="app_name" translatable="false">WA Web Scanner</string>
+    <string name="app_ad_id">ca-app-pub-3940256099942544~3347511713</string>
 </resources>

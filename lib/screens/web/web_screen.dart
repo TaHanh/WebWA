@@ -10,18 +10,19 @@ class WebScreen extends StatefulWidget {
   _WebScreenState createState() => new _WebScreenState();
 }
 
-class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixin {
+class _WebScreenState extends State<WebScreen>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
-  // AdmobInterstitial interstitialAd;
+//   AdmobInterstitial interstitialAd;
   String newUA;
   String phone = "";
   webview.FlutterWebviewPlugin flutterWebviewP = webview.FlutterWebviewPlugin();
-  final Completer<WebViewController> _controller = Completer<WebViewController>();
+  final Completer<WebViewController> _controller =
+      Completer<WebViewController>();
   @override
   void initState() {
     super.initState();
-
 
     // newUA =
     //     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
@@ -52,8 +53,13 @@ class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixi
 //    String newUA = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:40.0) Gecko/20100101 Firefox/53.1";
 //    String newUA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
 //    String newUA = "Mozilla/5.0 (Linux; Android 5.1.1; Android SDK built for x86 Build/LMY48X) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36";
-    String newUA ="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
+    String newUA =
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.108 Safari/537.36";
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Scan"),
+        centerTitle: true,
+      ),
       body: Container(
         // decoration: BoxDecoration(
         //   image: new DecorationImage(
@@ -61,38 +67,36 @@ class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixi
         //     fit: BoxFit.cover,
         //   ),
         // ),
-        child: SafeArea(
-          child: new WebView(
-            // key: UniqueKey(),
+        child: new WebView(
+          // key: UniqueKey(),
 //             initialUrl: "https://www.facebook.com/",
-            initialUrl: "https://web.whatsapp.com/",
-            javascriptMode: JavascriptMode.unrestricted,
-            userAgent: newUA,
-             onWebViewCreated: (WebViewController webViewController) {
-                _controller.complete(webViewController);
-             },
-            // javascriptChannels: <JavascriptChannel>[
-            //   snackbarJavascriptChannel(context),
-            // ].toSet(),
-            // navigationDelegate: (NavigationRequest request) {
-            //   return NavigationDecision.navigate;
-            // },
-            navigationDelegate: (NavigationRequest request) {
-              if (request.url.startsWith('https://www.youtube.com/')) {
-                print('blocking navigation to $request}');
-                return NavigationDecision.prevent;
-              }
-              if (request.url.startsWith('https://flutter.dev/docs')) {
-                print('blocking navigation to $request}');
-                return NavigationDecision.prevent;
-              }
-              print('allowing navigation to $request');
-              return NavigationDecision.navigate;
-            },
-            onPageFinished: (String url) {
-              print('Page finished loading: $url');
-            },
-          ),
+          initialUrl: "https://web.whatsapp.com/",
+          javascriptMode: JavascriptMode.unrestricted,
+          userAgent: newUA,
+          onWebViewCreated: (WebViewController webViewController) {
+            _controller.complete(webViewController);
+          },
+          // javascriptChannels: <JavascriptChannel>[
+          //   snackbarJavascriptChannel(context),
+          // ].toSet(),
+          // navigationDelegate: (NavigationRequest request) {
+          //   return NavigationDecision.navigate;
+          // },
+          navigationDelegate: (NavigationRequest request) {
+            if (request.url.startsWith('https://www.youtube.com/')) {
+              print('blocking navigation to $request}');
+              return NavigationDecision.prevent;
+            }
+            if (request.url.startsWith('https://flutter.dev/docs')) {
+              print('blocking navigation to $request}');
+              return NavigationDecision.prevent;
+            }
+            print('allowing navigation to $request');
+            return NavigationDecision.navigate;
+          },
+          onPageFinished: (String url) {
+            print('Page finished loading: $url');
+          },
         ),
       ),
     );
@@ -118,7 +122,8 @@ class _WebScreenState extends State<WebScreen> with AutomaticKeepAliveClientMixi
                 Container(
                     padding: EdgeInsets.only(bottom: 15.0),
                     child: new CircularProgressIndicator(
-                      valueColor: new AlwaysStoppedAnimation<Color>(Color(0xFF075e54)),
+                      valueColor:
+                          new AlwaysStoppedAnimation<Color>(Color(0xFF075e54)),
                     )),
                 Text('Waiting.....'),
               ],
