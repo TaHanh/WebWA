@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.ratedialog.RatingDialog;
+import com.startapp.sdk.adsbase.StartAppAd;
+import com.startapp.sdk.adsbase.StartAppSDK;
 import com.whatsweb.scanner.wa.utils.*;
 import com.whatsweb.scanner.wa.utils.adx.Config;
 import com.google.gson.Gson;
@@ -28,8 +30,8 @@ public class MainActivity extends FlutterActivity implements RatingDialog.Rating
 //    initCompanyAd();
         FlutterMain.startInitialization(this);
         super.onCreate(savedInstanceState);
+        StartAppSDK.setTestAdsEnabled(BuildConfig.DEBUG);
         GeneratedPluginRegistrant.registerWith(this);
-
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(
                 new MethodChannel.MethodCallHandler() {
                     @Override
@@ -78,13 +80,19 @@ public class MainActivity extends FlutterActivity implements RatingDialog.Rating
                                         SharedPrefsUtils.getInstance(MainActivity.this).getBoolean(Config.IS_SHOW_BANNER))));
                                 break;
                             }
+                            case "showInter":{
+                                showInter();
+                                result.success("ok");
+                            }
                         }
 
                     }
                 });
 //        rateAuto();
     }
-
+    public void showInter() {
+        StartAppAd.showAd(this);
+    }
     public class Ads {
 
         @SerializedName("ad_banner_id")

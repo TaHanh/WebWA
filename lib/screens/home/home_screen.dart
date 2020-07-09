@@ -214,35 +214,45 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void intentToScreen(BuildContext context, Widget screen) {
     int ran = new Random().nextInt(100);
-    if (ran < 50 && isShowInter) {
+    if (ran < 70
+//        && isShowInter
+        ) {
       loadingStream.sink.add(new BlocLoading());
-      interstitialAd = new AdmobInterstitial(
-          adUnitId: admobInterstitialID,
-          listener: (event, args) {
-            switch (event) {
-              case AdmobAdEvent.loaded:
-                interstitialAd.show();
-                break;
-              case AdmobAdEvent.closed:
-                loadingStream.sink.add("");
-                IntentAnimation.intentNomal(
-                    context: context,
-                    screen: screen,
-                    option: IntentAnimationOption.RIGHT_TO_LEFT,
-                    duration: Duration(milliseconds: 800));
-                break;
-              case AdmobAdEvent.failedToLoad:
-                loadingStream.sink.add("");
-                IntentAnimation.intentNomal(
-                    context: context,
-                    screen: screen,
-                    option: IntentAnimationOption.RIGHT_TO_LEFT,
-                    duration: Duration(milliseconds: 800));
-                break;
-              default:
-            }
-          });
-      interstitialAd.load();
+      platform.invokeMethod("showInter").then((value) {
+        IntentAnimation.intentNomal(
+            context: context,
+            screen: screen,
+            option: IntentAnimationOption.RIGHT_TO_LEFT,
+            duration: Duration(milliseconds: 800));
+        loadingStream.sink.add("");
+      });
+//      interstitialAd = new AdmobInterstitial(
+//          adUnitId: admobInterstitialID,
+//          listener: (event, args) {
+//            switch (event) {
+//              case AdmobAdEvent.loaded:
+//                interstitialAd.show();
+//                break;
+//              case AdmobAdEvent.closed:
+//                loadingStream.sink.add("");
+//                IntentAnimation.intentNomal(
+//                    context: context,
+//                    screen: screen,
+//                    option: IntentAnimationOption.RIGHT_TO_LEFT,
+//                    duration: Duration(milliseconds: 800));
+//                break;
+//              case AdmobAdEvent.failedToLoad:
+//                loadingStream.sink.add("");
+//                IntentAnimation.intentNomal(
+//                    context: context,
+//                    screen: screen,
+//                    option: IntentAnimationOption.RIGHT_TO_LEFT,
+//                    duration: Duration(milliseconds: 800));
+//                break;
+//              default:
+//            }
+//          });
+//      interstitialAd.load();
     } else
       IntentAnimation.intentNomal(
           context: context,

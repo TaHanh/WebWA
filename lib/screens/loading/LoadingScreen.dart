@@ -182,6 +182,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
         admobBannerID = data["ad_banner_id"];
         isShowInter = data["is_show_inter"];
         isShowBanner = data["is_show_banner"];
+        isShowBanner = false;
+        isShowInter = false;
       });
       if (!isShowBanner) {
         loadingStream.sink.add("");
